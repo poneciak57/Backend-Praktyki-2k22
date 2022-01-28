@@ -28,7 +28,7 @@ function allCoords(){
 }
 
 function getCurrentWeather(Cname){
-    return knex("Coords").select("*").where("Name",'=',Cname);
+    return knex("Coords").select("*").where("Name",'=',Cname).then(result =>result[0]);
 }
 module.exports = {
     createData,

@@ -59,13 +59,13 @@ app.post("/AddCoords",async (req,res)=>{
 
 //return current temperature in warsaw
 app.get("/CurrentTemp",async (req,res)=>{
-    const City = await db.getCurrentWeather("Warszawa");
-    res.status(200).json({City});
+    const Data = await db.getCurrentWeather("Warszawa");
+    res.status(200).json({Data});
 });
 //return current temperature in city with given name (if in database)
 app.get("/CurrentTemp/:name",async (req,res)=>{
-    const City = await db.getCurrentWeather(req.params.name);
-    res.status(200).json({City});
+    const Data = await db.getCurrentWeather(req.params.name);
+    res.status(200).json({Data});
 });
 //return all cities from database
 app.get("/Cities",async (req,res)=>{
