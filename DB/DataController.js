@@ -11,9 +11,6 @@ async function getWeather(nrRows){
     const maxid = await knex("Weather").select("id");
     return knex("Weather").select("*").where("id",'>',maxid.length - nrRows).orderBy("id","desc");
 }
-function getLongitudeLatitude(name){
-    return knex("Coords").select(['Latitude' ,'Longitude']).where("Name",'=',name).then(result => result[0]);
-};
 function getCities(){
     return knex("Coords").select("*").orderBy("Name","asc");
 }
@@ -26,19 +23,16 @@ async function updateCity(Cname,Data){
     .update(Data)
     .where('Name','=',Cname);
 };
-function allCoords()
-{
+function allCoords(){
     return knex("Coords").select("*");
 }
 
-function getCurrentWeather(Cname)
-{
+function getCurrentWeather(Cname){
     return knex("Coords").select("*").where("Name",'=',Cname);
 }
 module.exports = {
     createData,
     getWeather,
-    getLongitudeLatitude,
     getCities,
     selectSpecific,
     updateCity,

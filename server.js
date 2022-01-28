@@ -24,7 +24,6 @@ const job2 = schedule.scheduleJob('*/2 * * * *', async function(){
     const select = await db.allCoords();
     select.forEach(async e => {
         Wf.forecast(async function(Data){
-            console.log(Data);
             await db.updateCity(e.Name,Data);
         },
         e.Latitude,
