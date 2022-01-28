@@ -19,7 +19,18 @@ app.use(cors());
 
 const job = schedule.scheduleJob('30 * * * *', function(){
     Measurment.createMeasurment();
-  });
+});
+const job2 = schedule.scheduleJob('*/2 * * * *', async function(){
+    const select = await db.allCoords();
+    select.forEach(async e => {
+        Wf.forecast(async function(Data){
+            console.log(Data);
+            await db.updateCity(e.Name,Data);
+        },
+        e.Latitude,
+        e.Longitude);
+    });
+});
 
 //here we are configuring dist to serve app files
 app.use('/', serveStatic(path.join(__dirname, '/dist')))
@@ -35,6 +46,11 @@ app.post("/AddCoords",async (req,res)=>{
     if(checkForExisting.length == 0)
     {
         const Data = await db.createData(req.body,"Coords");
+        Wf.forecast(async function(Data){
+            await db.updateCity(req.body.Name,Data);
+        },
+        req.body.Latitude,
+        req.body.Longitude);
         res.status(201).send("Pomyślnie dodano nowe miasto");
     }else
     {
@@ -42,30 +58,15 @@ app.post("/AddCoords",async (req,res)=>{
     }
 });
 
-//return current temperature on given coords
-app.get("/WeatherFromCoords",async (req,res)=>{
-    Wf.forecast(function(Temperature){
-        res.status(200).json({Temperature})
-    },
-    req.body.latitude,
-    req.body.longitude)
-});
-
 //return current temperature in warsaw
 app.get("/CurrentTemp",async (req,res)=>{
-    Wf.forecast(function(Temperature){
-        res.status(200).json({Temperature});
-    },
-    Coords.latitude,
-    Coords.longitude)
+    const City = await db.getCurrentWeather("Warszawa");
+    res.status(200).json({City});
 });
 //return current temperature in city with given name (if in database)
 app.get("/CurrentTemp/:name",async (req,res)=>{
-    const Data = await db.getLongitudeLatitude(req.params.name);
-    Wf.forecast(function(Temperature){
-        res.status(200).json({Temperature});
-    },
-    Data.Latitude,Data.Longitude)
+    const City = await db.getCurrentWeather(req.params.name);
+    res.status(200).json({City});
 });
 //return all cities from database
 app.get("/Cities",async (req,res)=>{
