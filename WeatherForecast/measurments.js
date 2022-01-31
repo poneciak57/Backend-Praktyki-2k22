@@ -1,6 +1,5 @@
 const db = require("../DB/DataController");
 const Wf = require("./WeatherForecast");
-const Coords = require("./Coords");
 
 function getCurrentDate()
 {
@@ -19,8 +18,8 @@ function createMeasurment()
         await db.createData(Temperature,"Weather");
         console.log("Created New Measurment");
     },
-    Coords.latitude,
-    Coords.longitude)
+    52.237049,
+    21.017532)
 }
 
 module.exports = {
