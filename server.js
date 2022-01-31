@@ -2,12 +2,9 @@ const express = require("express");
 const app = express();
 const bodyParser = require('body-parser');
 
-const serveStatic = require('serve-static')
-const path = require('path')
-
 const db = require("./DB/DataController");
 const Wf = require("./WeatherForecast/WeatherForecast");
-const Coords = require("./WeatherForecast/Coords");
+
 const Measurment = require("./WeatherForecast/measurments");
 const schedule = require('node-schedule');
 const cors = require('cors');
@@ -29,14 +26,6 @@ const job2 = schedule.scheduleJob('*/2 * * * *', async function(){
         e.Latitude,
         e.Longitude);
     });
-});
-
-//here we are configuring dist to serve app files
-app.use('/', serveStatic(path.join(__dirname, '/dist')))
-
-// this * route is to serve project on different page routes except root `/`
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, "/dist/index.html"));
 });
 
 //adding city with coordinates to database ( this enable weather check for new city )
